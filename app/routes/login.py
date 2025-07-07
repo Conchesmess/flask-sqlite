@@ -5,12 +5,14 @@ from flask import redirect, flash, request, session, url_for, render_template, a
 from functools import wraps
 from authlib.integrations.flask_client import OAuth
 import os
-from flask_login import login_user, current_user
+from flask_login import login_user, current_user, login_required, logout_user
 from sqlalchemy import select
 from is_safe_url  import is_safe_url
 
+
 # Google OAuth configuration
 oauth = OAuth(app)
+
 google = oauth.register(
     name='google',
     client_id=os.environ.get('ccpa_google_client_id'),
@@ -30,47 +32,31 @@ def before_request():
 
 def create_or_update_user(user_info):
     """Create or update user in database"""
+    thisUser=None
     try:
         # Check if user exists
-        user = User.query.filter_by(google_id=user_info['sub']).first()
+        thisUser = db.one_or_404(db.select(User).filter_by(google_id=user_info['sub']))
+    
+    except:
+        # Create new user
+        thisUser = User(
+            google_id=user_info['sub'],
+            email=user_info['email'],
+            name=user_info['name'],
+            picture=user_info.get('picture'),
+            last_login=datetime.now(timezone.utc)
+        )
+        db.session.add(thisUser)
+    else:
+        # Update existing user
+        thisUser.last_login = datetime.now(timezone.utc)
+    db.session.commit()
+    return thisUser
         
-        if user:
-            # Update existing user
-            user.last_login = datetime.now(timezone.utc)
-            user.name = user_info['name']
-            user.picture = user_info.get('picture')
-        else:
-            # Create new user
-            user = User(
-                google_id=user_info['sub'],
-                email=user_info['email'],
-                name=user_info['name'],
-                picture=user_info.get('picture'),
-                last_login=datetime.now(timezone.utc)
-            )
-            db.session.add(user)
-        
-        db.session.commit()
-        return user
-        
-    except Exception as e:
-        db.session.rollback()
-        raise e
-
-def login_required(f):
-    """Decorator to require login for protected routes"""
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        if 'user' not in session:
-            return redirect(url_for('login'))
-        return f(*args, **kwargs)
-    return decorated_function
 
 @app.route('/')
 def index():
     """Home page"""
-    if 'user' in session:
-        return redirect(url_for('dashboard'))
     return render_template('index.html')
 
 @app.route('/login')
@@ -81,32 +67,34 @@ def login():
 
 @login_manager.user_loader
 def load_user(id):
-    return select(User).where(User.id == id)
+    try:
+        user = db.one_or_404(db.select(User).where(User.id == id))
+    except:
+        flash(f"this user with id {id} doesn't exist")
+    return user
+
 
 @app.route('/login/callback')
 def callback():
     """Handle OAuth callback"""
     try:
         token = google.authorize_access_token()
+        #session['google_id_token'] = token['id_token']
+        current_user.google_id_token = token['id_token']
         user_info = token['userinfo']
         
+    except Exception as e:
+         flash(f'Login failed: {str(e)}', 'error')
+         return redirect(url_for('index'))
+    
+    else:
         # Create or update user in database
         user = create_or_update_user(user_info)
-
-        login_user(user)
+        login_user(user, force=True)
         load_user(user.id)
         
-        # Store user info in session
-        session['user'] = {
-            'id': user.id,
-            'google_id': user.google_id,
-            'email': user.email,
-            'name': user.name,
-            'picture': user.picture
-        }
-        flash(session['user'])
-        
-        flash('Successfully logged in!', 'success')
+        flash(f"current user is authenticated: {current_user.is_authenticated}","success")
+        #flash(f"Current user has valid google id token: {current_user.is_valid()}","success")
 
         next = request.args.get('next')
         # url_has_allowed_host_and_scheme should check if the url is safe
@@ -114,36 +102,20 @@ def callback():
         # See Django's url_has_allowed_host_and_scheme for an example.
         if next and is_safe_url(next, request.host):
             return abort(400)
+    return redirect(next or url_for('profile'))
 
-        return redirect(next or url_for('dashboard'))
-        
-    except Exception as e:
-        flash(f'Login failed: {str(e)}', 'error')
-        return redirect(url_for('index'))
-
-
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    """Protected dashboard page"""
-    return render_template('dashboard.html', user=session['user'])
 
 @app.route('/profile')
 @login_required
 def profile():
-    """User profile page"""
-    user = User.query.get(session['user']['id'])
-    if not user:
-        flash('User not found', 'error')
-        return redirect(url_for('logout'))
-    
-    return render_template('profile.html', user=user.to_dict())
+    return render_template('profile.html')
 
 @app.route('/logout')
 def logout():
     """Logout user"""
-    session.pop('user', None)
-    flash('You have been logged out.', 'info')
+    logout_user()
+    if current_user.is_anonymous:
+        flash('You have been logged out.', 'info')
     return redirect(url_for('index'))
 
 @app.route('/users')
@@ -155,3 +127,12 @@ def list_users():
     
     return render_template('users.html', users=users_data)
 
+@app.route(('/valid'))
+@login_required
+def valid():
+    if current_user.is_valid():
+        flash("Current User has a valid Google Login.","info")
+        return redirect(url_for("profile"))
+    else:
+        flash("Current User needed to refresh Google Credentials.","info")
+        return redirect(url_for('login'))
