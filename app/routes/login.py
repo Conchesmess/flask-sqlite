@@ -6,7 +6,6 @@ from functools import wraps
 from authlib.integrations.flask_client import OAuth
 import os
 from flask_login import login_user, current_user, login_required, logout_user
-from sqlalchemy import select
 from is_safe_url  import is_safe_url
 
 
@@ -69,9 +68,10 @@ def login():
 def load_user(id):
     try:
         user = db.one_or_404(db.select(User).where(User.id == id))
+        return user
+
     except:
-        flash(f"this user with id {id} doesn't exist")
-    return user
+        flash(f"No user was loaded.")
 
 
 @app.route('/login/callback')
@@ -136,3 +136,4 @@ def valid():
     else:
         flash("Current User needed to refresh Google Credentials.","info")
         return redirect(url_for('login'))
+    

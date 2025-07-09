@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
+<table class="table">
+    <tr><th>ID</th><th>title</th><th>date</th><th>author</th></tr>
+    {% for story in stories %}
+        <tr>
+            <td>{{story.id}}</td><td>{{story.title}}</td><td>{{ moment(story.createdate).calendar() }}</td><td>{{story.author.name}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}
