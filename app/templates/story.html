@@ -3,6 +3,7 @@
 {% block body %}
 
 {{story.title}} <br>
-{{story.content}} <br>
+by {{story.author.name}} <br>
+{{story.content|safe}} <br>
 
 {% endblock %}

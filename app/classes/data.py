@@ -1,10 +1,9 @@
-# User Model
-from app import db
 from datetime import datetime, timezone
 from flask_login import UserMixin, current_user
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import os
+from app import db
 
 
 class User(db.Model, UserMixin):
@@ -21,7 +20,7 @@ class User(db.Model, UserMixin):
 
     
     def __repr__(self):
-        return f'<User {self.email}>'
+        return self.name
     
     def to_dict(self):
         return {

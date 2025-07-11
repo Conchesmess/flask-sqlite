@@ -27,7 +27,7 @@ def newStory():
             )
         db.session.add(newStory)
         db.session.commit()
-        return redirect(url_for("story",sid=newStory.id))
+        return redirect(url_for("story",id=newStory.id))
     return render_template("story_form.html", form=form)
 
 
@@ -36,8 +36,22 @@ def story(id):
     thisStory = db.one_or_404(db.select(Story).filter_by(id=id))
     return render_template("story.html",story=thisStory)
 
+@app.route('/story/edit/<int:id>', methods=['GET', 'POST'])
+def editStory(id):
+    thisStory = db.one_or_404(db.select(Story).filter_by(id=id))
+    form = StoryForm()
+    if form.validate_on_submit():
+        thisStory.title = form.title.data
+        thisStory.content = form.content.data
+        db.session.commit()
+        return redirect(url_for('story',id=id))
+    form.title.data = thisStory.title
+    form.content.process_data(thisStory.content)
+    return render_template('story_form.html',form=form)
+
+
 @app.route('/story/delete/<int:id>', methods=['GET', 'POST'])
-@confirm_delete(Story, redirect_url='/story/list', message_field='title')
+@confirm_delete(Story, redirect_url='/story/list', message_fields=['title','author','content'], message_date_field = 'createdate')
 def deleteStory(id):
     
     thisStory = db.one_or_404(db.select(Story).filter_by(id=id))

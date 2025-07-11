@@ -3,6 +3,11 @@
 {% block body %}
 
 <h1>Profile</h1>
-{{current_user.name}}
-
+<h2>{{current_user.name}}</h2>
+{% if current_user.stories %}
+    <h3>My Stories</h3>
+    {% for story in current_user.stories %} <br>
+        <a href="/story/{{story.id}}">{{ story.title }}</a> <br>
+    {% endfor %}
+{% endif %}
 {% endblock %}
