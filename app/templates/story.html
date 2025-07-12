@@ -2,6 +2,7 @@
 
 {% block body %}
 
+<small><a href="/story/edit/{{story.id}}">Edit</a> <a href="/story/delete/{{story.id}}">Delete</a></small> <br>
 {{story.title}} <br>
 by {{story.author.name}} <br>
 {{story.content|safe}} <br>
