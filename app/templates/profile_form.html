@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block body %}
+    <div class="container">
+        <h1>Edit Profile</h1>
+        {% for field in form.errors %}
+            {% for error in form.errors[field] %}
+                <div class="alert alert-error">
+                    <strong>Error!</strong>{{field}}: {{error}}
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+<h1>Profile</h1>
+<h2>{{current_user.name}}</h2>
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <label for="image_url">Paste or drag image URL here:</label>
+    {{ form.image_url(size=60) }}
+    {{ form.submit() }}
+</form>
+
+{% if image_filename %}
+    <h3>Downloaded Image:</h3>
+    <img src="{{ url_for('static', filename=image_filename) }}" style="max-width:400px;">
+{% endif %}
+
+{% if current_user.stories %}
+    <h3>My Stories</h3>
+    {% for story in current_user.stories %} <br>
+        <a href="/story/{{story.id}}">{{ story.title }}</a> <br>
+    {% endfor %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block body %}
+<div class="container">
+    <br>
+    {% if total %}
+    <div class="row">
+        {% for i in range(total) %}
+            <div class="col-1 border {% if i < nextIndex %}bg-success{% else %}bg-secondary{% endif %}"><br></div>
+        {% endfor %}
+    </div>
+    <center>
+        <h1>{{nextIndex}} / {{total}}</h1>
+    </center>
+    {% endif %}
+    <br>
+    <center>
+        <h1>Working</h1>
+        <img src="/static/loading.gif">
+    </center>
+</div>
+
+<script type="text/javascript">
+    window.location.replace('{{url}}');
+</script>
+
+{% endblock %}

@@ -1,5 +1,6 @@
 from app import app, db, login_manager
 from app.classes.data import User
+from app.classes.forms import ProfileImageForm
 from datetime import datetime, timezone
 from flask import redirect, flash, request, session, url_for, render_template, abort
 from functools import wraps
@@ -7,6 +8,14 @@ from authlib.integrations.flask_client import OAuth
 import os
 from flask_login import login_user, current_user, login_required, logout_user
 from is_safe_url  import is_safe_url
+import requests
+from .credentials import GOOGLE_CLIENT_CONFIG
+from .scopes import scopes
+#import google.oauth2.credentials                
+import google_auth_oauthlib.flow                
+#import googleapiclient.discovery   
+#from oauthlib.oauth2 import WebApplicationClient
+#from urllib.parse import urljoin # For handling relative URLs
 
 
 # Google OAuth configuration
@@ -19,6 +28,16 @@ google = oauth.register(
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={'scope': 'openid email profile'}
 )
+
+# Do not edit anything in this function.  This is just for google authentication
+def credentials_to_dict(credentials):
+    return {'token': credentials.token,
+          'refresh_token': credentials.refresh_token,
+          'token_uri': credentials.token_uri,
+          'client_id': credentials.client_id,
+          'client_secret': credentials.client_secret,
+          'scopes': credentials.scopes
+          }
 
 @app.before_request
 def before_request():
@@ -40,9 +59,10 @@ def create_or_update_user(user_info):
         # Create new user
         thisUser = User(
             google_id=user_info['sub'],
-            email=user_info['email'],
-            name=user_info['name'],
-            picture=user_info.get('picture'),
+            email_ousd=user_info['email'],
+            fname=user_info['given_name'],
+            lname=user_info['family_name'],
+            image=user_info.get('picture'),
             last_login=datetime.now(timezone.utc)
         )
         db.session.add(thisUser)
@@ -108,6 +128,7 @@ def callback():
 @app.route('/profile')
 @login_required
 def profile():
+    #https://teacher.ousd.org/StuPic.ashx?ID=277365&BM=&SC=232&SZ=XLarge
     return render_template('profile.html')
 
 @app.route('/logout')
@@ -127,7 +148,7 @@ def list_users():
     
     return render_template('users.html', users=users_data)
 
-@app.route(('/valid'))
+@app.route('/valid')
 @login_required
 def valid():
     if current_user.is_valid():
@@ -136,4 +157,37 @@ def valid():
     else:
         flash("Current User needed to refresh Google Credentials.","info")
         return redirect(url_for('login'))
-    
+
+
+@app.route('/profile/edit', methods=['GET', 'POST'])
+@login_required
+def profile_edit():
+    form = ProfileImageForm()
+    image_filename = None
+    if form.validate_on_submit():
+        image_url = form.image_url.data
+
+        try:
+            response = requests.get(image_url, timeout=10)
+            response.raise_for_status()
+
+            flash(response.content)
+
+            image_filename = f"123456.gif"
+            image_path = os.path.join(app.static_folder, image_filename)
+            with open(image_path, 'wb') as f:
+                f.write(response.content)
+            flash(f'Image downloaded and saved as {image_filename}', 'success')
+        except Exception as e:
+            flash(f'Failed to download image: {str(e)}', 'danger')
+
+        return redirect(url_for('profile'))
+    return render_template('profile_form.html', form=form, image_filename=image_filename)
+
+@app.route('/authorize')
+def authorize():
+    # Intiiate login request
+    flow = google_auth_oauthlib.flow.Flow.from_client_config(client_config=GOOGLE_CLIENT_CONFIG, scopes=scopes)
+    flow.redirect_uri = url_for('callback', _external=True)
+    authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true')
+    return redirect(authorization_url)
