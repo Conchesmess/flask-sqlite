@@ -12,7 +12,6 @@ scopes = [
 
 # You can add more scopes if you want more permissions.
 # Example: 'https://www.googleapis.com/auth/gmail.labels' lets the app manage your Gmail labels.
-    ]
 
     
 

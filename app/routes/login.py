@@ -1,4 +1,3 @@
-google = oauth.register(
 
 # This file handles login, logout, and user profile features.
 # It connects the app to Google for logging in.
@@ -16,6 +15,7 @@ from is_safe_url  import is_safe_url  # Checks if URLs are safe
 import requests  # For web requests
 from .credentials import GOOGLE_CLIENT_CONFIG  # Google login info
 from .scopes import scopes  # Google permissions
+from .secret import *
 #import google.oauth2.credentials                
 import google_auth_oauthlib.flow                
 #import googleapiclient.discovery   
@@ -27,8 +27,8 @@ oauth = OAuth(app)
 
 google = oauth.register(
     name='google',
-    client_id=os.environ.get('ccpa_google_client_id'),  # Get client ID from environment
-    client_secret=os.environ.get('ccpa_google_client_secret'),  # Get client secret
+    client_id=client_id,  # Get client ID from environment
+    client_secret=client_secret,  # Get client secret
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={'scope': 'openid email profile'}  # Ask for email and profile info
 )

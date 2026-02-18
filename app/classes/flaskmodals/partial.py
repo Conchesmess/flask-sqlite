@@ -1,4 +1,3 @@
-def get_partial(modal, *args, **kwargs):
 
 # This file helps get the content for modal pop-ups.
 # Modals are used to show messages or forms on the page.

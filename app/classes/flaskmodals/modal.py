@@ -1,6 +1,6 @@
-def modal_messages():
-def render_template_modal(*args, **kwargs):
-def can_stream():
+#def modal_messages():
+#def render_template_modal(*args, **kwargs):
+#def can_stream():
 
 # This file adds modal features to the app.
 # Modals are pop-up windows for messages or forms.
