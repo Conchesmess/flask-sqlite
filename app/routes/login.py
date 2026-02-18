@@ -1,43 +1,48 @@
-from app import app, db, login_manager
-from app.classes.data import User
-from app.classes.forms import ProfileImageForm
-from datetime import datetime, timezone
-from flask import redirect, flash, request, session, url_for, render_template, abort
-from functools import wraps
-from authlib.integrations.flask_client import OAuth
-import os
-from flask_login import login_user, current_user, login_required, logout_user
-from is_safe_url  import is_safe_url
-import requests
-from .credentials import GOOGLE_CLIENT_CONFIG
-from .scopes import scopes
+google = oauth.register(
+
+# This file handles login, logout, and user profile features.
+# It connects the app to Google for logging in.
+
+from app import app, db, login_manager  # Import app, database, and login manager
+from app.classes.data import User  # User model
+from app.classes.forms import ProfileImageForm  # Form for profile image
+from datetime import datetime, timezone  # For dates and times
+from flask import redirect, flash, request, session, url_for, render_template, abort  # Flask tools
+from functools import wraps  # For decorators
+from authlib.integrations.flask_client import OAuth  # For Google login
+import os  # For environment variables
+from flask_login import login_user, current_user, login_required, logout_user  # Login tools
+from is_safe_url  import is_safe_url  # Checks if URLs are safe
+import requests  # For web requests
+from .credentials import GOOGLE_CLIENT_CONFIG  # Google login info
+from .scopes import scopes  # Google permissions
 #import google.oauth2.credentials                
 import google_auth_oauthlib.flow                
 #import googleapiclient.discovery   
 #from oauthlib.oauth2 import WebApplicationClient
 #from urllib.parse import urljoin # For handling relative URLs
 
-
-# Google OAuth configuration
+# Set up Google login
 oauth = OAuth(app)
 
 google = oauth.register(
     name='google',
-    client_id=os.environ.get('ccpa_google_client_id'),
-    client_secret=os.environ.get('ccpa_google_client_secret'),
+    client_id=os.environ.get('ccpa_google_client_id'),  # Get client ID from environment
+    client_secret=os.environ.get('ccpa_google_client_secret'),  # Get client secret
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
-    client_kwargs={'scope': 'openid email profile'}
+    client_kwargs={'scope': 'openid email profile'}  # Ask for email and profile info
 )
 
-# Do not edit anything in this function.  This is just for google authentication
+# This function turns Google credentials into a dictionary
 def credentials_to_dict(credentials):
-    return {'token': credentials.token,
-          'refresh_token': credentials.refresh_token,
-          'token_uri': credentials.token_uri,
-          'client_id': credentials.client_id,
-          'client_secret': credentials.client_secret,
-          'scopes': credentials.scopes
-          }
+    return {
+        'token': credentials.token,
+        'refresh_token': credentials.refresh_token,
+        'token_uri': credentials.token_uri,
+        'client_id': credentials.client_id,
+        'client_secret': credentials.client_secret,
+        'scopes': credentials.scopes
+    }
 
 @app.before_request
 def before_request():

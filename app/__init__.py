@@ -1,43 +1,50 @@
-from flask import Flask, request
-import os
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager
-from functools import wraps
-from flask_moment import Moment
-from markupsafe import Markup
-from datetime import datetime
 
+# This file sets up the main app and its features.
+# It connects the app to the database, login system, and other tools.
+
+from flask import Flask, request  # Flask is the main web framework
+import os  # Used for environment variables
+from flask_sqlalchemy import SQLAlchemy  # For database
+from flask_login import LoginManager  # For login/logout
+from functools import wraps  # For decorators
+from flask_moment import Moment  # For showing dates/times
+from markupsafe import Markup  # For safe HTML
+from datetime import datetime  # For dates/times
 
 app = Flask(__name__)
 
+# Set a secret key for security (change this in real apps!)
 app.secret_key = os.environ.get('SECRET_KEY', 'your-secret-key-change-this')
 
-# Database configuration
+# Database setup
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///users.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize SQLAlchemy
+# Create the database object
 db = SQLAlchemy(app)
 
+# Set up login manager
 login_manager = LoginManager(app)
 # login_manager = LoginManager()
 # login_manager.init_app(app)
 
+# Set up Moment for time display
 moment = Moment(app)
 
+# Import modal features for pop-up windows
 from app.classes.flaskmodals import Modal, render_template_modal
 modal = Modal(app)
 
-
-# confirm Delete Decorator
+# Decorator to confirm deleting items
 def confirm_delete(model_class, redirect_url=None, message_fields=[], message_date_field=None):
     """
-    Advanced version that automatically fetches the model instance.
+    This decorator helps confirm deleting things from the database.
+    It shows a message before deleting.
     """
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
-            ajax = '_ajax' in request.form  # Add this line
+            ajax = '_ajax' in request.form  # Checks if it's an AJAX request
             if ajax:        # Add these
                 return ''   # two lines
 

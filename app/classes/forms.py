@@ -1,34 +1,29 @@
-from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, EmailField, HiddenField, SelectField
-from wtforms.validators import InputRequired
-#from wtforms.validators import Length, URL, NumberRange, Email, Optional, InputRequired, ValidationError, DataRequired
 
+# This file defines forms for the app.
+# Forms let users enter information, like stories or profile details.
 
+from flask_wtf import FlaskForm  # Main form class
+from wtforms import StringField, SubmitField, TextAreaField, EmailField, HiddenField, SelectField  # Form fields
+from wtforms.validators import InputRequired  # Validator for required fields
+# Other validators can be used for more checks
+
+# Form for creating/editing a story
 class StoryForm(FlaskForm):
-    title = StringField()
-    content = TextAreaField()
-    submit = SubmitField()
+    title = StringField()  # Title of the story
+    content = TextAreaField()  # Story content
+    submit = SubmitField()  # Submit button
 
+# Form for editing user profile
 class ProfileForm(FlaskForm):
-    fname = StringField()
-    lname = StringField()
-    email_ousd = EmailField()
-    email_personal = EmailField()
-    mobile = StringField()
-    submit = SubmitField()
+    fname = StringField()  # First name
+    lname = StringField()  # Last name
+    email_ousd = EmailField()  # School email
+    email_personal = EmailField()  # Personal email
+    mobile = StringField()  # Mobile number
+    submit = SubmitField()  # Submit button
 
+# Form for uploading a profile image
 class ProfileImageForm(FlaskForm):
-    image_url = StringField()
-    submit = SubmitField()
+    image_url = StringField()  # URL of the image
+    submit = SubmitField()  # Submit button
 
-class SimpleForm(FlaskForm):
-    field = TextAreaField(validators=[InputRequired()])
-    submit = SubmitField("Submit")
-
-class SortOrderCohortForm(FlaskForm):
-    sortOrderCohort = SelectField("Sort Value:",choices=[],validate_choice=False)
-    gid = HiddenField()
-    gmail = HiddenField()
-    gclassid = HiddenField()
-    order = HiddenField()
-    submit = SubmitField("Submit")
