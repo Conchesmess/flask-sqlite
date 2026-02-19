@@ -13,7 +13,6 @@ import os  # For environment variables
 from flask_login import login_user, current_user, login_required, logout_user  # Login tools
 from is_safe_url  import is_safe_url  # Checks if URLs are safe
 import requests  # For web requests
-from .credentials import GOOGLE_CLIENT_CONFIG  # Google login info
 from .scopes import scopes  # Google permissions
 from .secret import *
 #import google.oauth2.credentials                
@@ -23,6 +22,20 @@ import google_auth_oauthlib.flow
 #from urllib.parse import urljoin # For handling relative URLs
 
 # Set up Google login
+# Google login info
+GOOGLE_CLIENT_CONFIG = {
+    "web": {
+        "client_id": my_google_client_id,
+        "client_secret": my_google_client_secret,
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "redirect_uris": [
+            "https://127.0.0.1:5000/oauth2callback"
+        ]
+    }
+}
+
 oauth = OAuth(app)
 
 google = oauth.register(
