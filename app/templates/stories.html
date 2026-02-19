@@ -9,7 +9,7 @@
             <td>{{story.id}}</td>
             <td><a href="/story/{{story.id}}">{{story.title}}</a></td>
             <td>{{ moment(story.createdate).calendar() }}</td>
-            <td>{{story.author.name}}</td>
+            <td>{{story.author.fname}} {{story.author.lname}}</td>
             <td><small><a href="/story/edit/{{story.id}}">Edit</a> <a href="/story/delete/{{story.id}}">Delete</a></small></td>
         </tr>
     {% endfor %}

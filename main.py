@@ -12,11 +12,5 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     
-    # Check if Google client ID and secret are set in secret.py
-    if not my_google_client_id:
-        print("Warning: my_google_client_id variable not set")
-    if not my_google_client_secret:
-        print("Warning: my_google_client_secret variable not set")
-    
     # Start the web server with SSL (secure connection)
     app.run(debug=True, use_reloader=True, ssl_context=('cert.pem', 'key.pem'), port=8080)
