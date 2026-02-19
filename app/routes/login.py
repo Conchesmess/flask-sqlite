@@ -62,6 +62,10 @@ def create_or_update_user(user_info):
     
     except:
         # Create new user
+        if user_info['email'][:1] == "s_":
+            thisRole = "student"
+        else:
+            thisRole = "staff"
         thisUser = User(
             google_id=user_info['sub'],
             email_ousd=user_info['email'],
@@ -74,6 +78,10 @@ def create_or_update_user(user_info):
     else:
         # Update existing user
         thisUser.last_login = datetime.now(timezone.utc)
+        if thisUser.email_ousd[:1] == 's_' and thisUser.role != "student":
+            thisUser.role = 'student'
+        elif thisUser.role != "admin":
+            thisUser.role = 'staff'
     db.session.commit()
     return thisUser
         

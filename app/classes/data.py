@@ -25,13 +25,13 @@ class User(db.Model, UserMixin):
     last_login = db.Column(db.DateTime)  # Last login time
     aeriesid = db.Column(db.Integer)  # School ID
     gid = db.Column(db.String(50))  # Google group ID
-    role = db.Column(db.String(20))  # Role: staff, teacher, student
+    role = db.Column(db.String(20))  # ie staff, teacher, student
 
     # Link to stories written by the user
     stories = db.relationship('Story', back_populates='author')
 
     def __repr__(self):
-        return self.name
+        return f"{self.fname} {self.lname} Role: {self.role}"
     
     def to_dict(self):
         return {

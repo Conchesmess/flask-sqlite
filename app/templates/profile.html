@@ -3,7 +3,8 @@
 {% block body %}
 
 <h1>Profile</h1>
-<a href="https://teacher.ousd.org/StuPic.ashx?ID=395563&BM=&SC=232&SZ=XLarge">Aeries Image</a>
+<img src="{{current_user.image}}"> <br>
+{{current_user}} <br>
 
 {% if current_user.stories %}
     <h3>My Stories</h3>
