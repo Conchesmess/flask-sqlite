@@ -13,12 +13,9 @@ from flask_login import current_user, login_required  # Login tools
 @app.route('/story/list')
 def stories():
     stories = Story.query.order_by(Story.createdate.desc()).all()
-    if stories:
-        render_template("stories.html",stories=stories)
-        return render_template("stories.html",stories=stories)
-    else:
-        flash("no stories", "info")
-        return redirect(url_for("index"))
+
+    return render_template("stories.html",stories=stories)
+
 
 # Create a new story
 @app.route('/story/new', methods=['GET', 'POST'])

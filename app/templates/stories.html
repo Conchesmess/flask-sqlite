@@ -1,12 +1,16 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
+<a href="/story/new">New</a> <br>
 <table class="table">
-    <tr><th>ID</th><th>title</th><th>date</th><th>author</th></tr>
+    <tr><th>ID</th><th>title</th><th>date</th><th>author</th><td></td></tr>
     {% for story in stories %}
         <tr>
-            <td>{{story.id}}</td><td><a href="/story/{{story.id}}">{{story.title}}</a></td><td>{{ moment(story.createdate).calendar() }}</td><td>{{story.author.name}}</td>
+            <td>{{story.id}}</td>
+            <td><a href="/story/{{story.id}}">{{story.title}}</a></td>
+            <td>{{ moment(story.createdate).calendar() }}</td>
+            <td>{{story.author.name}}</td>
+            <td><small><a href="/story/edit/{{story.id}}">Edit</a> <a href="/story/delete/{{story.id}}">Delete</a></small></td>
         </tr>
     {% endfor %}
 </table>
