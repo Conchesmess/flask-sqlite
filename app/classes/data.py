@@ -8,7 +8,6 @@ from google.oauth2 import id_token  # For Google login
 from google.auth.transport import requests  # For Google login
 import os  # For environment variables
 from app import db  # Database
-from app.routes.secret import *
 
 # User model: stores info about each user
 class User(db.Model, UserMixin):
@@ -51,6 +50,7 @@ class User(db.Model, UserMixin):
     def is_valid(self):
         try:
             # Check the Google ID token
+            from app.routes.secret import my_google_client_id
             idinfo = id_token.verify_oauth2_token(current_user.google_id_token, requests.Request(), my_google_client_id)
         except:
             # Invalid token

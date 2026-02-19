@@ -27,8 +27,8 @@ oauth = OAuth(app)
 
 google = oauth.register(
     name='google',
-    client_id=client_id,  # Get client ID from secret.py file
-    client_secret=client_secret,  # Get client secret
+    client_id=my_google_client_id,  # Get client ID from secret.py file
+    client_secret=my_google_client_secret,  # Get client secret
     server_metadata_url='https://accounts.google.com/.well-known/openid-configuration',
     client_kwargs={'scope': 'openid email profile'}  # Ask for email and profile info
 )
