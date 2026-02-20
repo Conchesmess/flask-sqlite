@@ -4,22 +4,30 @@
 
 <h1>Profile</h1>
 <a class="btn btn-secondary" href="/profile/edit">Edit</a> <br> <br>
+<h3>{{current_user.fname}} {{current_user.lname}} </h3>
 {% if current_user.image %}
     <img width = "400" src="data:image;base64,{{base64encode(current_user.image)}}"> <br>
 {% elif current_user.google_image %}
     <img src="{{current_user.google_image}}"> <br>
 {% endif %}
 
-{{current_user.fname}} {{current_user.lname}} <br>
 Role: {{current_user.role}} <br>
 OUSD Email: {{current_user.email_ousd}} <br>
 Personal Email: {{current_user.email_personal}} <br>
 Mobile: {{current_user.mobile}} <br>
 
 {% if current_user.stories %}
-    <h3>My Stories</h3>
+    <table class="table">
+        <th colspan="2">My Stories</th>
     {% for story in current_user.stories %} <br>
-        <a href="/story/{{story.id}}">{{ story.title }}</a> <br>
+    <tr>
+        <td>{{ moment(story.createdate).calendar() }}</td>
+        <td>
+            <a href="/story/{{story.id}}">{{ story.title }}</a> <br>
+        </td>
+    </tr>
     {% endfor %}
+    </table>    
+    <br> <br>
 {% endif %}
 {% endblock %}

@@ -95,7 +95,7 @@ def create_or_update_user(user_info):
         thisUser.last_login = datetime.now(timezone.utc)
         if thisUser.email_ousd[:1] == 's_' and thisUser.role != "student":
             thisUser.role = 'student'
-        elif thisUser.role != "admin":
+        else:
             thisUser.role = 'staff'
         flash("Processed existing user.")
     db.session.commit()

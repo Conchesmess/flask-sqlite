@@ -13,12 +13,12 @@
         <form method=post>
             {{ form.hidden_tag() }}
             <div class="form-group">
-                <label for="title">First Name</label>
+                <label for="title">Title</label>
                 {{ form.title(class='form-control') }}
             </div>
             <div class="form-control">
                 <label for="content">Story</label>
-                {{ form.content(class='tmce-editor', class='form-control') }}
+                {{ form.content(class='tmce-editor form-control') }}
             </div>
             {{ form.submit(class='form-control btn btn-secondary') }}
         </form>

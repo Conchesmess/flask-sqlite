@@ -20,13 +20,13 @@ class User(db.Model, UserMixin):
     fname = db.Column(db.String(100), nullable=False)  # First name
     lname = db.Column(db.String(100), nullable=False)  # Last name
     image = db.Column(db.LargeBinary)  # Profile image as binary data
-    google_image = db.Column(db.String(100))
+    google_image = db.Column(db.String(100)) # link to google profile image
     mobile = db.Column(db.String(15))  # Mobile number
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))  # When user was created
     last_login = db.Column(db.DateTime)  # Last login time
     aeriesid = db.Column(db.Integer)  # School ID
-    gid = db.Column(db.String(50))  # Google group ID
-    role = db.Column(db.String(20))  # ie staff, teacher, student
+    gid = db.Column(db.String(50))  # Google ID
+    role = db.Column(db.String(20))  # ie staff, student
 
     # Link to stories written by the user
     stories = db.relationship('Story', back_populates='author')
