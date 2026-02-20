@@ -19,7 +19,8 @@ class User(db.Model, UserMixin):
     email_personal = db.Column(db.String(120), unique=True)  # Personal email
     fname = db.Column(db.String(100), nullable=False)  # First name
     lname = db.Column(db.String(100), nullable=False)  # Last name
-    image = db.Column(db.String(200))  # Profile image
+    image = db.Column(db.LargeBinary)  # Profile image as binary data
+    google_image = db.Column(db.String(100))
     mobile = db.Column(db.String(15))  # Mobile number
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))  # When user was created
     last_login = db.Column(db.DateTime)  # Last login time

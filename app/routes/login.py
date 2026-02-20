@@ -4,7 +4,7 @@
 
 from app import app, db, login_manager  # Import app, database, and login manager
 from app.classes.data import User  # User model
-from app.classes.forms import ProfileImageForm  # Form for profile image
+from app.classes.forms import ProfileForm  # Form for profile image
 from datetime import datetime, timezone  # For dates and times
 from flask import redirect, flash, request, session, url_for, render_template, abort  # Flask tools
 from functools import wraps  # For decorators
@@ -84,10 +84,12 @@ def create_or_update_user(user_info):
             email_ousd=user_info['email'],
             fname=user_info['given_name'],
             lname=user_info['family_name'],
-            image=user_info.get('picture'),
-            last_login=datetime.now(timezone.utc)
+            google_image=user_info.get('picture'),
+            last_login=datetime.now(timezone.utc),
+            role = thisRole
         )
         db.session.add(thisUser)
+        flash("Created new user.")
     else:
         # Update existing user
         thisUser.last_login = datetime.now(timezone.utc)
@@ -95,6 +97,7 @@ def create_or_update_user(user_info):
             thisUser.role = 'student'
         elif thisUser.role != "admin":
             thisUser.role = 'staff'
+        flash("Processed existing user.")
     db.session.commit()
     return thisUser
         
@@ -117,7 +120,7 @@ def load_user(id):
         return user
 
     except:
-        flash(f"No user was loaded.")
+        pass
 
 
 @app.route('/login/callback')
@@ -125,7 +128,6 @@ def callback():
     """Handle OAuth callback"""
     try:
         token = google.authorize_access_token()
-        #session['google_id_token'] = token['id_token']
         current_user.google_id_token = token['id_token']
         user_info = token['userinfo']
         
@@ -188,27 +190,24 @@ def valid():
 @app.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
 def profile_edit():
-    form = ProfileImageForm()
-    image_filename = None
+    form = ProfileForm()
     if form.validate_on_submit():
-        image_url = form.image_url.data
+        if form.image.data:
+            current_user.image = form.image.data.read()
 
-        try:
-            response = requests.get(image_url, timeout=10)
-            response.raise_for_status()
-
-            flash(response.content)
-
-            image_filename = f"123456.gif"
-            image_path = os.path.join(app.static_folder, image_filename)
-            with open(image_path, 'wb') as f:
-                f.write(response.content)
-            flash(f'Image downloaded and saved as {image_filename}', 'success')
-        except Exception as e:
-            flash(f'Failed to download image: {str(e)}', 'danger')
-
+        current_user.fname = form.fname.data
+        current_user.lname = form.lname.data
+        current_user.mobile = form.mobile.data
+        current_user.email_personal = form.email_personal.data
+        db.session.commit()
+        flash('Profile updated.', 'success')
         return redirect(url_for('profile'))
-    return render_template('profile_form.html', form=form, image_filename=image_filename)
+    form.fname.data = current_user.fname
+    form.lname.data = current_user.lname
+    form.mobile.data = current_user.mobile
+    form.email_personal.data = current_user.email_personal
+    return render_template('profile_form.html', form=form)
+    
 
 @app.route('/authorize')
 def authorize():

@@ -10,6 +10,7 @@ from functools import wraps  # For decorators
 from flask_moment import Moment  # For showing dates/times
 from markupsafe import Markup  # For safe HTML
 from datetime import datetime  # For dates/times
+import base64
 
 app = Flask(__name__)
 
@@ -91,6 +92,14 @@ def confirm_delete(model_class, redirect_url=None, message_fields=[], message_da
         
         return decorated_function
     return decorator
+
+# function so that Jinja can decode base64 image string that are stored in the DB
+def base64encode(img):
+    image = base64.b64encode(img)
+    image = image.decode('utf-8')
+    return image
+
+app.jinja_env.globals.update(base64encode=base64encode)
 
 
 from .routes import *

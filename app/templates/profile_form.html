@@ -11,25 +11,38 @@
             {% endfor %}
         {% endfor %}
 
-<h1>Profile</h1>
-<h2>{{current_user.name}}</h2>
+        <h2>{{current_user.name}}</h2>
 
-<form method="POST">
-    {{ form.hidden_tag() }}
-    <label for="image_url">Paste or drag image URL here:</label>
-    {{ form.image_url(size=60) }}
-    {{ form.submit() }}
-</form>
+        <form method="POST"  enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="fname">First Name</label>
+                {{ form.fname(size=60, class="form-control") }} <br>
+            </div>
+            <div class="form-group">
+                <label for="lname">Last Name</label>
+                {{ form.lname(size=60, class="form-control") }} <br>
+            </div>
+            <div class="form-group">
+                <label for="mobile">Mobile: </label>
+                {{ form.mobile(size=60, class="form-control") }} <br>
+            </div>
+            <div class="form-group">
+                <label for="email_personal">Personal Email</label>
+                {{ form.email_personal(size=60, class="form-control") }} <br>
+            </div>
+            <div class="form-group">
+                <label for="image">Upload a new profile image</label> <br>
+                {{ form.image(size=60, class="form-control") }} <br>
+            </div>
+            {{ form.submit(class="btn btn-primary") }}
+        </form>
 
-{% if image_filename %}
-    <h3>Downloaded Image:</h3>
-    <img src="{{ url_for('static', filename=image_filename) }}" style="max-width:400px;">
-{% endif %}
-
-{% if current_user.stories %}
-    <h3>My Stories</h3>
-    {% for story in current_user.stories %} <br>
-        <a href="/story/{{story.id}}">{{ story.title }}</a> <br>
-    {% endfor %}
-{% endif %}
+        {% if current_user.stories %}
+            <h3>My Stories</h3>
+            {% for story in current_user.stories %} <br>
+                <a href="/story/{{story.id}}">{{ story.title }}</a> <br>
+            {% endfor %}
+        {% endif %}
+    </div>
 {% endblock %}

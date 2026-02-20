@@ -3,7 +3,7 @@
 # Forms let users enter information, like stories or profile details.
 
 from flask_wtf import FlaskForm  # Main form class
-from wtforms import StringField, SubmitField, TextAreaField, EmailField, HiddenField, SelectField  # Form fields
+from wtforms import StringField, SubmitField, TextAreaField, EmailField, FileField, HiddenField, SelectField  # Form fields
 from wtforms.validators import InputRequired  # Validator for required fields
 # Other validators can be used for more checks
 
@@ -17,13 +17,13 @@ class StoryForm(FlaskForm):
 class ProfileForm(FlaskForm):
     fname = StringField()  # First name
     lname = StringField()  # Last name
-    email_ousd = EmailField()  # School email
     email_personal = EmailField()  # Personal email
     mobile = StringField()  # Mobile number
+    image = FileField('Profile Image')  # File upload field
     submit = SubmitField()  # Submit button
 
 # Form for uploading a profile image
 class ProfileImageForm(FlaskForm):
-    image_url = StringField()  # URL of the image
+    image = FileField('Profile Image')  # File upload field
     submit = SubmitField()  # Submit button
 

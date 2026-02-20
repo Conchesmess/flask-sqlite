@@ -3,8 +3,18 @@
 {% block body %}
 
 <h1>Profile</h1>
-<img src="{{current_user.image}}"> <br>
-{{current_user}} <br>
+<a href="/profile/edit">Edit</a> <br>
+{% if current_user.image %}
+    <img width = "400" src="data:image;base64,{{base64encode(current_user.image)}}"> <br>
+{% elif current_user.google_image %}
+    <img src="{{current_user.google_image}}"> <br>
+{% endif %}
+
+{{current_user.fname}} {{current_user.lname}} <br>
+Role: {{current_user.role}} <br>
+OUSD Email: {{current_user.email_ousd}} <br>
+Personal Email: {{current_user.email_personal}} <br>
+Mobile: {{current_user.mobile}} <br>
 
 {% if current_user.stories %}
     <h3>My Stories</h3>
