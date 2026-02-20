@@ -37,12 +37,5 @@
             </div>
             {{ form.submit(class="btn btn-secondary") }}
         </form>
-
-        {% if current_user.stories %}
-            <h3>My Stories</h3>
-            {% for story in current_user.stories %} <br>
-                <a href="/story/{{story.id}}">{{ story.title }}</a> <br>
-            {% endfor %}
-        {% endif %}
     </div>
 {% endblock %}
