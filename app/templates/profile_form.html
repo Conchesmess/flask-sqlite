@@ -17,25 +17,25 @@
             {{ form.hidden_tag() }}
             <div class="form-group">
                 <label for="fname">First Name</label>
-                {{ form.fname(size=60, class="form-control") }} <br>
+                {{ form.fname(class="form-control") }} <br>
             </div>
             <div class="form-group">
                 <label for="lname">Last Name</label>
-                {{ form.lname(size=60, class="form-control") }} <br>
+                {{ form.lname(class="form-control") }} <br>
             </div>
             <div class="form-group">
                 <label for="mobile">Mobile: </label>
-                {{ form.mobile(size=60, class="form-control") }} <br>
+                {{ form.mobile(class="form-control") }} <br>
             </div>
             <div class="form-group">
                 <label for="email_personal">Personal Email</label>
-                {{ form.email_personal(size=60, class="form-control") }} <br>
+                {{ form.email_personal(class="form-control") }} <br>
             </div>
             <div class="form-group">
                 <label for="image">Upload a new profile image</label> <br>
-                {{ form.image(size=60, class="form-control") }} <br>
+                {{ form.image(class="form-control") }} <br>
             </div>
-            {{ form.submit(class="btn btn-primary") }}
+            {{ form.submit(class="btn btn-secondary") }}
         </form>
 
         {% if current_user.stories %}

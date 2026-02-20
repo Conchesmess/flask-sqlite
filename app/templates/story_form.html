@@ -12,11 +12,15 @@
         {% endfor %}
         <form method=post>
             {{ form.hidden_tag() }}
-            Title <br>
-            {{ form.title(class='form-control') }} <br>
-            Story <br>
-            {{ form.content(class='tmce-editor') }} <br>
-            {{ form.submit(class='form-control btn-primary') }}
+            <div class="form-group">
+                <label for="title">First Name</label>
+                {{ form.title(class='form-control') }}
+            </div>
+            <div class="form-control">
+                <label for="content">Story</label>
+                {{ form.content(class='tmce-editor', class='form-control') }}
+            </div>
+            {{ form.submit(class='form-control btn btn-secondary') }}
         </form>
         
     </div>

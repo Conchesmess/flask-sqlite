@@ -13,7 +13,7 @@
             <a class="navbar-brand" href="{{ url_for('index') }}">Flask Starter App with Google Sign-in and SQLite</a>
             <div class="navbar-nav ms-auto">
                 {% if current_user.is_authenticated %}
-                    <a class="nav-link" href="{{ url_for('stories') }}">All Stories</a>
+                    <a class="nav-link" href="{{ url_for('stories') }}">Stories</a>
                     <a class="nav-link" href="{{ url_for('profile') }}">{{current_user.fname}} {{current_user.lname}}</a>
                     <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
                 {% else %}

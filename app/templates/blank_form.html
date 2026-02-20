@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-
+<!--This file is not used by this site.  It is here as a template so that 
+you can dupicate it as a starting place for a new firm.-->
 {% block body %}
     <div class="container">
         <h1>Form Page Title</h1>
@@ -12,11 +13,31 @@
         {% endfor %}
         <form method=post>
             {{ form.hidden_tag() }}
-            <table class="table">
-            <tr><th>Header 1</th><th>Header 2</th></tr>
-            <tr><td colspan="2">{{form.submit()}}</td></tr>
+            <div class="form-group">
+                <!--this is an example of a plain input field-->
+                <!--replace "field" with the name of your field-->
+                <label for="field">Field</label>
+                {{ form.field(class="form-control") }}
+            </div>
+            <div class="form-group">
+                <!--This is an example of textarea filed for formatted text-->
+                <!--You need the javascript below for this to work-->
+                <!--Replace "content" with the name of your textarea field-->
+                <label for="content">Content</label>
+                {{ form.content(class='form-control tmce-editor') }} <br>
+            </div>
+            {{form.submit(class='form-control btn btn-secondary')}}
             </table>
         </form>
-        
     </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" integrity="sha512-6JR4bbn8rCKvrkdoTJd/VFyXAN4CE9XMtgykPWgKiHjou56YDJxWsi90hAeMTYxNwUnKSQu9JPc3SQUg+aGCHw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: 'textarea.tmce-editor',
+        plugins:'advlist autolink lists link image charmap print preview hr anchor pagebreak searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking save table contextmenu directionality emoticons template paste textcolor colorpicker textpattern imagetools',
+        toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | forecolor backcolor emoticons',
+        image_advtab: true
+    });
+  </script>
 {% endblock %}

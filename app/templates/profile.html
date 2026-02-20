@@ -3,7 +3,7 @@
 {% block body %}
 
 <h1>Profile</h1>
-<a href="/profile/edit">Edit</a> <br>
+<a class="btn btn-secondary" href="/profile/edit">Edit</a> <br> <br>
 {% if current_user.image %}
     <img width = "400" src="data:image;base64,{{base64encode(current_user.image)}}"> <br>
 {% elif current_user.google_image %}
