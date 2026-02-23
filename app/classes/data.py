@@ -6,7 +6,6 @@ from datetime import datetime, timezone  # For dates and times
 from flask_login import UserMixin, current_user  # For login features
 from google.oauth2 import id_token  # For Google login
 from google.auth.transport import requests  # For Google login
-import os  # For environment variables
 from app import db  # Database
 
 # User model: stores info about each user
@@ -39,7 +38,7 @@ class User(db.Model, UserMixin):
             'id': self.id,
             'google_id': self.google_id,
             'email_ousd': self.email_ousd,
-            'email_ersonal': self.email_personal,
+            'email_personal': self.email_personal,
             'fname': self.fname,
             'lname': self.lname,
             'image': self.image,
