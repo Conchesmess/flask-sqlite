@@ -16,6 +16,7 @@
                     <a class="nav-link" href="{{ url_for('stories') }}">Stories</a>
                     <a class="nav-link" href="{{ url_for('profile') }}">{{current_user.fname}} {{current_user.lname}}</a>
                     <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    <a class="nav-link" href="{{ url_for('revoke') }}">revoke</a>
                 {% else %}
                     <a class="nav-link" href="{{ url_for('login') }}">Login</a>
                 {% endif %}
