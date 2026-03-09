@@ -1,26 +1,4 @@
-# Revoke all permissions granted by user
-@app.route('/revoke')
-@login_required
-def revoke():
-    access_token = None
-    # Try to get access token from session or user
-    if hasattr(current_user, 'google_id_token'):
-        access_token = getattr(current_user, 'google_id_token', None)
-    if not access_token:
-        access_token = session.get('access_token')
-    if not access_token:
-        flash('No access token found to revoke.', 'error')
-        return redirect(url_for('profile'))
-    revoke_url = 'https://oauth2.googleapis.com/revoke'
-    params = {'token': access_token}
-    response = requests.post(revoke_url, params=params)
-    if response.status_code == 200:
-        flash('Permissions revoked successfully.', 'success')
-    else:
-        flash('Failed to revoke permissions.', 'error')
-    logout_user()
-    session.clear()
-    return redirect(url_for('index'))
+
 
 # This file handles login, logout, and user profile features.
 # It connects the app to Google for logging in.
@@ -239,3 +217,27 @@ def authorize():
     flow.redirect_uri = url_for('callback', _external=True)
     authorization_url, state = flow.authorization_url(access_type='offline', include_granted_scopes='true')
     return redirect(authorization_url)
+
+# Revoke all permissions granted by user
+@app.route('/revoke')
+@login_required
+def revoke():
+    access_token = None
+    # Try to get access token from session or user
+    if hasattr(current_user, 'google_id_token'):
+        access_token = getattr(current_user, 'google_id_token', None)
+    if not access_token:
+        access_token = session.get('access_token')
+    if not access_token:
+        flash('No access token found to revoke.', 'error')
+        return redirect(url_for('profile'))
+    revoke_url = 'https://oauth2.googleapis.com/revoke'
+    params = {'token': access_token}
+    response = requests.post(revoke_url, params=params)
+    if response.status_code == 200:
+        flash('Permissions revoked successfully.', 'success')
+    else:
+        flash('Failed to revoke permissions.', 'error')
+    logout_user()
+    session.clear()
+    return redirect(url_for('index'))
